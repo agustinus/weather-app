@@ -72,7 +72,6 @@ class _MainScreenState extends State<MainScreen> {
             return Container();
           }
           if (state is WeatherReceiving) {
-            print('Receiving');
             return PendingAction();
           }
           if (state is WeatherReceived) {
