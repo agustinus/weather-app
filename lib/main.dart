@@ -67,7 +67,6 @@ class _MainScreenState extends State<MainScreen> {
           child: BlocBuilder(
         bloc: _weatherBloc,
         builder: (_, WeatherState state) {
-          return PendingAction();
           if (state is WeatherEmpty) {
             print('Empty');
             return Container();
