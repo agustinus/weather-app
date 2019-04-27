@@ -32,9 +32,13 @@ class MainScreen extends StatefulWidget {
   _MainScreenState createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   static const Color colorBlack = Color(0xFF2A2A2A);
   static const Color colorBlack2 = Color(0xFF556799);
+  static const Color colorBgRedError = Color(0xFFE85959);
+  static const Color colorBgWhite = Color(0xFFF5F6F7);
+  static const Color colorWhite = Color(0xFFFFFFFF);
+  static const Color colorBtn = Color(0xFF4A4A4A);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -53,9 +57,7 @@ class _MainScreenState extends State<MainScreen> {
     _getLocation().then((value) {
       setState(() {
         _userLocation = value;
-        _weatherBloc.dispatch(WeatherEventGetWeather(
-            query:
-                '${_userLocation['latitude'].toString()},${_userLocation['longitude'].toString()}'));
+        _getWeatherForecast();
       });
     });
 
@@ -76,35 +78,78 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Color(0xFFF5F6F7),
+      backgroundColor: colorBgWhite,
       body: SafeArea(
-          child: BlocBuilder(
-        bloc: _weatherBloc,
-        builder: (_, WeatherState state) {
-          if (state is WeatherEmpty) {
-            print('Empty');
-            return Container();
-          }
-          if (state is WeatherReceiving) {
-            return PendingAction();
-          }
-          if (state is WeatherReceived) {
-            final weather = state.weather;
-            return _buildCurrentTemperature(
-                weather.currentTemp, weather.country);
-          }
-          if (state is WeatherError) {
-            print('Error');
-            return Container();
-          }
-        },
-      )),
+        child: BlocBuilder(
+          bloc: _weatherBloc,
+          builder: (_, WeatherState state) {
+            if (state is WeatherEmpty) {
+              return Container();
+            }
+            if (state is WeatherReceiving) {
+              return PendingAction();
+            }
+            if (state is WeatherReceived) {
+              final weather = state.weather;
+              return _buildCurrentTemperature(
+                  weather.currentTemp, weather.country);
+            }
+            if (state is WeatherError) {
+              return _buildErrorWidget();
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  // Dispatch a bloc event to get weather forecast data
+  _getWeatherForecast() {
+    _weatherBloc.dispatch(WeatherEventGetWeather(
+        query:
+            '${_userLocation['latitude'].toString()},${_userLocation['longitude'].toString()}'));
+  }
+
+  _buildErrorWidget() {
+    return Container(
+      color: colorBgRedError,
+      padding: EdgeInsets.symmetric(horizontal: 40.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(bottom: 44.0),
+            child: Text(
+              'Something went wrong at our end!',
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w100,
+                fontSize: 54.0,
+                color: colorWhite,
+              ),
+            ),
+          ),
+          RaisedButton(
+            onPressed: () {
+              _getWeatherForecast();
+            },
+            child: Text(
+              'RETRY',
+              style: TextStyle(
+                color: colorWhite,
+              ),
+            ),
+            color: colorBtn,
+          )
+        ],
+      ),
     );
   }
 
   _buildBottomSheet(WeatherModel weather) {
     _scaffoldKey.currentState.showBottomSheet<Null>((BuildContext context) {
-      return new Container(child: _buildFourDaysForecast(weather));
+      return Container(child: _buildFourDaysForecast(weather));
     });
   }
 
