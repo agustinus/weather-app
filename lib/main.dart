@@ -46,6 +46,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   final Location _locationProvider = new Location();
   Map<String, double> _userLocation;
+  PersistentBottomSheetController _controller;
 
   @override
   void initState() {
@@ -64,6 +65,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     _weatherBloc.state.listen((data) {
       if (data is WeatherReceived) {
         _buildBottomSheet(data.weather);
+      }
+      if (data is WeatherError) {
+        _controller.close();
       }
     });
   }
@@ -148,42 +152,49 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   }
 
   _buildBottomSheet(WeatherModel weather) {
-    _scaffoldKey.currentState.showBottomSheet<Null>((BuildContext context) {
+    _controller = _scaffoldKey.currentState.showBottomSheet<Null>((BuildContext context) {
       return Container(child: _buildFourDaysForecast(weather));
     });
   }
 
   _buildCurrentTemperature(String temperature, String location) {
-    return Center(
-      child: Container(
-        padding: EdgeInsets.only(top: 56.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              '$temperature°C',
-              style: TextStyle(
-                fontFamily: 'Roboto',
-                fontWeight: FontWeight.w900,
-                fontSize: 96.0,
-                color: colorBlack,
-                height: 1.2,
-              ),
+    return RefreshIndicator(
+      onRefresh: () {
+        _getWeatherForecast();
+      },
+      child: ListView(children: <Widget>[
+        Center(
+          child: Container(
+            padding: EdgeInsets.only(top: 56.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  '$temperature°C',
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w900,
+                    fontSize: 96.0,
+                    color: colorBlack,
+                    height: 1.2,
+                  ),
+                ),
+                Text(
+                  location,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w100,
+                    fontSize: 36.0,
+                    color: colorBlack2,
+                    height: 1.4,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              location,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Roboto',
-                fontWeight: FontWeight.w100,
-                fontSize: 36.0,
-                color: colorBlack2,
-                height: 1.4,
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+      ]),
     );
   }
 
