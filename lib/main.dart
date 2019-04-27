@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location/location.dart';
 
 import 'src/models/weather_model.dart';
 import 'src/blocs/weather_bloc.dart';
@@ -39,12 +40,25 @@ class _MainScreenState extends State<MainScreen> {
 
   WeatherBloc _weatherBloc;
 
+  final Location _locationProvider = new Location();
+  Map<String, double> _userLocation;
+
   @override
   void initState() {
     super.initState();
 
     _weatherBloc = WeatherBloc();
-    _weatherBloc.dispatch(WeatherEventGetWeather(query: '180.129.34.196'));
+
+    // Get user location
+    _getLocation().then((value) {
+      setState(() {
+        _userLocation = value;
+        _weatherBloc.dispatch(WeatherEventGetWeather(
+            query:
+                '${_userLocation['latitude'].toString()},${_userLocation['longitude'].toString()}'));
+      });
+    });
+
     _weatherBloc.state.listen((data) {
       if (data is WeatherReceived) {
         _buildBottomSheet(data.weather);
@@ -113,6 +127,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
             Text(
               location,
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Roboto',
                 fontWeight: FontWeight.w100,
@@ -197,5 +212,15 @@ class _MainScreenState extends State<MainScreen> {
       );
     }
     return listTiles;
+  }
+
+  Future<Map<String, double>> _getLocation() async {
+    var currentLocation = <String, double>{};
+    try {
+      currentLocation = await _locationProvider.getLocation();
+    } catch (e) {
+      currentLocation = null;
+    }
+    return currentLocation;
   }
 }
