@@ -44,7 +44,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   WeatherBloc _weatherBloc;
 
-  final Location _locationProvider = new Location();
+  Location _locationProvider = new Location();
   Map<String, double> _userLocation;
   PersistentBottomSheetController _controller;
 
@@ -132,6 +132,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 fontSize: 54.0,
                 color: colorWhite,
               ),
+              key: Key('errorMsg'),
             ),
           ),
           RaisedButton(
@@ -143,6 +144,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
               style: TextStyle(
                 color: colorWhite,
               ),
+              key: Key('btnRetry'),
             ),
             color: colorBtn,
           )
@@ -178,6 +180,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                     color: colorBlack,
                     height: 1.2,
                   ),
+                  key: Key('curTemp'),
                 ),
                 Text(
                   location,
@@ -189,6 +192,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                     color: colorBlack2,
                     height: 1.4,
                   ),
+                  key: Key('curLoc'),
                 ),
               ],
             ),

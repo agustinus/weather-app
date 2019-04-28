@@ -16,6 +16,11 @@ class WeatherApi {
       final response = await Http.request(
           "https://api.apixu.com/v1/forecast.json?key=$apiKey&q=$q&days=$nextDays",
           method: HttpMethod.GET);
+      // This is used by flutter driver test + mock_web_server
+      // For now it's manually by commenting and un commenting these lines of code
+      // final response = await Http.request(
+      //     "http://127.0.0.1:8092/forecast.json?key=$apiKey&q=$q&days=$nextDays",
+      //     method: HttpMethod.GET);
       return WeatherModel.fromJson(response);
     } catch (e) {
       print(('Error: ' + e.toString()));
