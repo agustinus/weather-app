@@ -15,6 +15,9 @@ For help getting started with Flutter, view our
 [online documentation](https://flutter.io/docs), which offers tutorials, 
 samples, guidance on mobile development, and a full API reference.
 
+## Additional Feature
+I added a pull to refresh function. It's not being stated on the requirement, but it's good to have.
+
 ## Tests
 To run flutter driver test, go into the root directory of the project, and use this command:
 flutter drive --target=test_driver/app.dart
@@ -26,3 +29,9 @@ import 'package:test/test.dart';
 The flutter driver test with mock_web_server needs manually configuration and workaround.
 To test using this mock_web_server, we need to set the server manually (for now in this project) to use http://127.0.0.1:8092. The port number is configureable in test_driver/app_test.dart.
 There is an issue when we do multiple times test, seems the mock server connection is always unproperly close, thus for the workaround we need to change the port number everytime we run the flutter driver test.
+
+## Todo
+- Show a proper screen if user doesn't grant the app for location permission.
+- Move the geo location function to weather bloc instead.
+- Define a proper app name and bundle id/application id.
+- Broader app test coverage e.g error handling for missing key/value from the api, etc.
