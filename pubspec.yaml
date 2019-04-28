@@ -30,8 +30,12 @@ dependencies:
   location: ^1.4.1
 
 dev_dependencies:
-  flutter_test:
+  # flutter_test:
+  #   sdk: flutter
+  flutter_driver:
     sdk: flutter
+  test: any
+  mock_web_server: ^4.0.0
 
 
 # For information on the generic Dart part of this file, see the
