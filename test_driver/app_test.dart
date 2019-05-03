@@ -11,6 +11,15 @@ void main() {
     final curLocFinder = find.byValueKey('curLoc');
     final errorMsgFinder = find.byValueKey('errorMsg');
     final btnRetryFinder = find.byValueKey('btnRetry');
+    final List<SerializableFinder>listForecastFinder = [];
+    for (var i = 0; i < 4; i++) {
+      listForecastFinder.add(find.byValueKey('listForecast$i'));
+    }
+
+    final List<SerializableFinder>listDaysFinder = [];
+    for (var i = 0; i < 4; i++) {
+      listDaysFinder.add(find.byValueKey('listDays$i'));
+    } 
 
     FlutterDriver driver;
     MockWebServer _server;
@@ -22,7 +31,7 @@ void main() {
       await _server.enqueue(httpCode: 500);
       await _server.enqueue(
           body:
-              '{"location":{"country":"Singapore"},"current":{"temp_c":29},"forecast":{"forecastday":[{"date_epoch":1556323200,"day":{"avgtemp_c":28.4}}]}}');
+              '{"location":{"country":"Singapore"},"current":{"temp_c":29},"forecast":{"forecastday":[{"date_epoch":1556866235,"day":{"avgtemp_c":28.4}}, {"date_epoch":1556952635,"day":{"avgtemp_c":29.4}}, {"date_epoch":1557039035,"day":{"avgtemp_c":30.4}}, {"date_epoch":1557125435,"day":{"avgtemp_c":31.4}}, {"date_epoch":1557211835,"day":{"avgtemp_c":32.4}}]}}');
 
       driver = await FlutterDriver.connect();
     });
@@ -45,6 +54,20 @@ void main() {
       await driver.tap(btnRetryFinder);
       expect(await driver.getText(curTempFinder), "29°C");
       expect(await driver.getText(curLocFinder), "Singapore");
+    });
+
+    test('show forecast temperature', () async {
+      expect(await driver.getText(listForecastFinder[0]), "29°C");
+      expect(await driver.getText(listForecastFinder[1]), "30°C");
+      expect(await driver.getText(listForecastFinder[2]), "31°C");
+      expect(await driver.getText(listForecastFinder[3]), "32°C");
+    });
+
+    test('show forecast days', () async {
+      expect(await driver.getText(listDaysFinder[0]), "Saturday");
+      expect(await driver.getText(listDaysFinder[1]), "Sunday");
+      expect(await driver.getText(listDaysFinder[2]), "Monday");
+      expect(await driver.getText(listDaysFinder[3]), "Tuesday");
     });
   });
 }

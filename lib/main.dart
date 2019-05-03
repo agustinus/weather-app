@@ -154,7 +154,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   }
 
   _buildBottomSheet(WeatherModel weather) {
-    _controller = _scaffoldKey.currentState.showBottomSheet<Null>((BuildContext context) {
+    _controller =
+        _scaffoldKey.currentState.showBottomSheet<Null>((BuildContext context) {
       return Container(child: _buildFourDaysForecast(weather));
     });
   }
@@ -209,7 +210,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildForecastListTile(String title,
-      {String trailingText, dynamic onTapFunc}) {
+      {String trailingText, dynamic onTapFunc, int index}) {
     TextStyle textStyle = TextStyle(
       fontFamily: 'Roboto',
       color: colorBlack,
@@ -224,6 +225,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         title: Text(
           title,
           style: textStyle,
+          key: Key('listDays$index'),
         ),
         trailing: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -232,6 +234,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             Text(
               trailingText,
               style: textStyle,
+              key: Key('listForecast$index'),
             )
           ],
         ),
@@ -262,10 +265,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   List<Widget> _buildForecastList(List<ForecastDay> forecastDays) {
     List<Widget> listTiles = [];
+    int index = 0;
     for (var forecastDay in forecastDays) {
       listTiles.add(
         _buildForecastListTile(forecastDay.weekday,
-            trailingText: '${forecastDay.avgTemp}°C'),
+            trailingText: '${forecastDay.avgTemp}°C', index: index++),
       );
       listTiles.add(
         _buildDivider(),
