@@ -28,7 +28,6 @@ import 'package:test/test.dart';
 ## Known Issue
 The flutter driver test with mock_web_server needs manually configuration and workaround.
 To test using this mock_web_server, we need to set the server manually (for now in this project) to use http://127.0.0.1:8092. The port number is configureable in test_driver/app_test.dart.
-There is an issue when we do multiple times test, seems the mock server connection is always unproperly close, thus for the workaround we need to change the port number everytime we run the flutter driver test.
 
 ## Todo
 - Show a proper screen if user doesn't grant the app for location permission.
